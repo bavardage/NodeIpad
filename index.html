@@ -1,0 +1,47 @@
+<html>
+  <script class="jsbin" src="http://ajax.googleapis.com/ajax/libs/jquery/1.4.2/jquery.min.js"></script> 
+  <script>
+    function init() {
+    alert('inited');
+
+    //disable normal scroll
+    document.body.addEventListener('touchmove', function(event) {
+    event.preventDefault();
+    }, false); 
+
+    document.getElementById('mousepad').addEventListener('touchmove', function(event) {
+    touch = event.touches[0];
+    var offset = $('#mousepad').offset();
+    touch.pageX -= offset.left;
+    touch.pageY -= offset.top;
+    $('#info').html("" + offset.left + "," + offset.top + "(" + touch.pageX*2 + "," + touch.pageY*2 + ")");
+
+    $.get('/mouse?x=' + touch.pageX*2 + '&y=' + touch.pageY*2);
+    
+    });
+
+    $('#info').click(function() { alert('clicked'); });
+
+    document.getElementById('leftclick').addEventListener('touchstart', function(event) {
+      $.get('/click');
+    });
+}
+
+
+$(init);
+</script>
+<body id="body">
+
+<span id="info">whoah</span>
+<div id="mousepad" style="border: 1px solid black; background: #aaa; width: 640px; height: 400px;">
+woop
+</div>
+
+<div id="leftclick" style="width: 300px; height:100px; border: 1px solid #eee; background: #eee; border-radius: 20px;">
+CLICK
+</div>
+
+<input type="submit" id="leftclick">
+
+</body>
+</html>
