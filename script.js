@@ -27,7 +27,8 @@ function init() {
 			rm.touchStart(touch.pageX, touch.pageY);
   });
 
-  $('#leftclick').bind('touchstart', mouseClick);
+  $('#leftclick').bind('touchstart', mouseDown);
+  $('#leftclick').bind('touchend', mouseUp);
 }
 
 
@@ -37,6 +38,14 @@ function moveMouse(x, y) {
 
 function mouseClick() {
   $.get('/click');
+}
+
+function mouseDown() {
+  $.get('/xdt?c=mousedown 1');
+}
+
+function mouseUp() {
+  $.get('/xdt?c=mouseup 1');
 }
 
 function RelativeMouse() {

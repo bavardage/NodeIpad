@@ -89,6 +89,11 @@ getArgs('/command', function(req, res, args) {
 	    res.simpleText(500, 'no command');
 	  }
 	});
+getArgs('/xdt', function(req, res, args) {
+	  args.c = args.c || '';
+	  process.spawn('xdotool', args.c.split(' '));
+	  res.simpleText(200, 'ok');
+	});
 
 
 function serveFile(file, contentType) {
