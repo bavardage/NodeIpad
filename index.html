@@ -1,35 +1,9 @@
 <html>
-  <script class="jsbin" src="http://ajax.googleapis.com/ajax/libs/jquery/1.4.2/jquery.min.js"></script> 
+  <script class="jsbin" src="http://ajax.googleapis.com/ajax/libs/jquery/1.4.2/jquery.min.js"></script>
+  <script src="script.js"></script>
   <script>
-    function init() {
-    alert('inited');
-
-    //disable normal scroll
-    document.body.addEventListener('touchmove', function(event) {
-    event.preventDefault();
-    }, false); 
-
-    document.getElementById('mousepad').addEventListener('touchmove', function(event) {
-    touch = event.touches[0];
-    var offset = $('#mousepad').offset();
-    touch.pageX -= offset.left;
-    touch.pageY -= offset.top;
-    $('#info').html("" + offset.left + "," + offset.top + "(" + touch.pageX*2 + "," + touch.pageY*2 + ")");
-
-    $.get('/mouse?x=' + touch.pageX*2 + '&y=' + touch.pageY*2);
-    
-    });
-
-    $('#info').click(function() { alert('clicked'); });
-
-    document.getElementById('leftclick').addEventListener('touchstart', function(event) {
-      $.get('/click');
-    });
-}
-
-
-$(init);
-</script>
+    $(init);
+  </script>
 <body id="body">
 
 <span id="info">whoah</span>

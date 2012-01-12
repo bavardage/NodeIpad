@@ -53,8 +53,23 @@ var getArgs = function(path, callback) {
 
 
 getArgs('/mouse', function(req, res, args) {
-	  process.spawn('xdotool', ['mousemove', args.x, args.y]);
-	  res.simpleText(200, 'OK');
+	  if(args.x && args.y) {
+	    var ps = process.spawn('xdotool', ['mousemove', args.x, args.y]);
+	    res.simpleText(200, 'ok');
+	  } else {
+	    var ps = process.spawn('xdotool', ['getmouselocation']);
+
+	    ps.stdout.on('data', function(data) {
+	      // data like "x:23 y:83 screen:93"
+	      var result = {};
+	      var items = data.asciiSlice(0,data.length).split(' ');
+	      for(var i = 0; i < 3; i++) {
+		var kv = items[i].split(':');
+		result[kv[0]] = parseInt(kv[1]);
+	      }
+	      res.simpleJSON(200, result);
+	    });
+	  }
 	});
 getArgs('/click', function(req, res, args) {
 	  process.spawn('xdotool', ['click', args.button || 1]);
@@ -75,18 +90,24 @@ getArgs('/command', function(req, res, args) {
 	  }
 	});
 
-get('/', function(req, res) {
-      fs.readFile('./index.html', function(error, content) {
-        if (error) {
-            res.writeHead(500);
-            res.end();
-        }
-        else {
-            res.writeHead(200, { 'Content-Type': 'text/html' });
-            res.end(content, 'utf-8');
-        }
-      });
+
+function serveFile(file, contentType) {
+  return function(req, res) {
+    fs.readFile(file, function(error, content) {
+      if(error) {
+	res.writeHead(500);
+	res.end();
+      } else {
+	res.writeHead(200, { 'Content-Type': contentType || 'text/html' });
+	res.end(content, 'utf-8');
+      }
     });
+  };
+}
+
+
+get('/', serveFile('./index.html'));
+get('/script.js', serveFile('./script.js', 'text/javascript'));
 
 
 server.listen(8080, '10.0.0.1');
